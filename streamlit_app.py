@@ -159,7 +159,7 @@ def generate_recipe_image(recipe_text: str, extra_instructions: str = "") -> str
 
     # Additional instructions from user
     prompt_for_dalle = (
-        f"A cartoon sketch of the food, inspired by the illustrative style of Tom Hovey, characterized by bold lines, vibrant colors, and a playful, whimsical feel. It should depict a {potential_title}. {extra_instructions}"
+        f"A cartoon sketch of the food, inspired by the illustrative style of Tom Hovey, characterized by bold lines, vibrant colors, and a playful, whimsical feel. It should depict {potential_title}. {extra_instructions}"
     )
     
     response = client.images.generate(
