@@ -243,11 +243,6 @@ def create_github_pr(final_recipe: str, compressed_image_bytes: str, technical_t
 
     return pr.html_url
 
-# Function to encode an image
-def encode_image(image_path):
-    with open(image_path, "rb") as image_file:
-        return base64.b64encode(image_file.read()).decode("utf-8")
-
 def extract_text_from_image(image_bytes: bytes, extra_instructions: str = "") -> str:
     """
     Extracts text from an image using OpenAI. 
@@ -257,32 +252,33 @@ def extract_text_from_image(image_bytes: bytes, extra_instructions: str = "") ->
     :param extra_instructions: Additional instructions to guide the OCR/vision model.
     :return: A string containing the extracted text from the image.
     """
+    # Convert the raw image bytes to base64
+    base64_image = base64.b64encode(image_bytes).decode("utf-8")
 
-    # Path to your image
-    image_path = "path_to_your_image.jpg"
-
-    # Getting the Base64 string
-    base64_image = encode_image(image_path)
-
-    # Example prompt or instructions for an image-based model (assuming GPT-4 with vision capabilities).
-    # Adjust as appropriate for the API/method you are using.
+    # Send a request to your OpenAI instance; the exact structure
+    # depends on your model endpoint and how your library expects image input.
     response = client.responses.create(
         model="gpt-4o-mini", 
         input=[
             {
                 "role": "user",
                 "content": [
-                {
-                    "type": "input_text",
-                    "text": f"You are an AI assistant that extracts all visible text from the image. {extra_instructions}"
-                },
-                {
-                    "type": "input_image",
-                    "image_url": f"data:image/jpeg;base64,{base64_image}"
-                }]
+                    {
+                        "type": "input_text",
+                        "text": (
+                            "You are an AI assistant that extracts all visible text from the provided image. "
+                            f"{extra_instructions}"
+                        )
+                    },
+                    {
+                        "type": "input_image",
+                        "image_url": f"data:image/jpeg;base64,{base64_image}"
+                    }
+                ]
             }
         ]
     )
+
     extracted_text = response.output_text
     return extracted_text
 
@@ -322,6 +318,28 @@ def main():
         st.session_state.technical_title = ""
 
     st.title("Recipe Converter")
+    st.subheader("Extract Text from Uploaded Image")
+    uploaded_image = st.file_uploader("Upload an image (JPEG/PNG)", type=["jpg", "jpeg", "png"])
+
+    if uploaded_image is not None:
+        # Read the raw bytes of the uploaded image
+        image_bytes = uploaded_image.read()
+
+        # Optionally, display the uploaded image in Streamlit
+        st.image(image_bytes, caption="Uploaded Image Preview", use_container_width=True)
+
+        # Add a text input for any extra instructions you may want to pass
+        extra_instructions = st.text_input("Extra instructions for text extraction", "")
+
+        if st.button("Extract Text"):
+            with st.spinner("Extracting text from image..."):
+                try:
+                    extracted_text = extract_text_from_image(image_bytes, extra_instructions)
+                    st.success("Extraction successful!")
+                    st.write("**Extracted Text:**")
+                    st.write(extracted_text)
+                except Exception as e:
+                    st.error(f"Error extracting text: {e}")
 
     # ---------------------------------------------------------------------------------
     # STEP 1: If we do NOT have a final recipe, show the input form.
