@@ -161,7 +161,7 @@ def call_openai_for_recipe(recipe_text: str, user_instructions: str) -> str:
         logger.debug(f"Response after cleaning: First 100 chars: {cleaned_response[:100]}...")
 
         # Fix the date in the frontmatter
-        today_date = datetime.date.today().strftime("%Y-%m-%d")
+        today_date = datetime.today().strftime("%Y-%m-%d")
         cleaned_response = re.sub(
             r'(date\s*=\s*)"[^"]*"', 
             f'\\1"{today_date}"', 

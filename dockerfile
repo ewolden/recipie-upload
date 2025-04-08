@@ -14,6 +14,9 @@ COPY pyproject.toml uv.lock streamlit_app.py /app/
 # Install uv
 RUN pip install uv
 
+# Create virtual environment
+RUN uv venv
+
 # Install dependencies using uv
 RUN uv pip install --requirement pyproject.toml
 
