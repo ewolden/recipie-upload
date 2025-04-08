@@ -8,6 +8,7 @@ from github import Github  # PyGithub
 import logging
 from PIL import Image
 import io
+import base64
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -137,7 +138,7 @@ def call_openai_for_recipe(recipe_text: str, user_instructions: str) -> str:
     """
     logging.info("Sending prompt to OpenAI")
     response = client.responses.create(
-        model="gpt-4.5-preview",
+        model="gpt-4o-2024-08-06",
         input=prompt,
         instructions="You are transforming food recipes into a specific markdown format. Respond only with the converted recipe markdown, nothing else.",
     )
@@ -241,6 +242,71 @@ def create_github_pr(final_recipe: str, compressed_image_bytes: str, technical_t
     logging.info(f"Pull request created: {pr.html_url}")
 
     return pr.html_url
+
+# Function to encode an image
+def encode_image(image_path):
+    with open(image_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode("utf-8")
+
+def extract_text_from_image(image_bytes: bytes, extra_instructions: str = "") -> str:
+    """
+    Extracts text from an image using OpenAI. 
+    Accepts raw image bytes as input and returns the extracted text.
+
+    :param image_bytes: Raw bytes of the image file.
+    :param extra_instructions: Additional instructions to guide the OCR/vision model.
+    :return: A string containing the extracted text from the image.
+    """
+
+    # Path to your image
+    image_path = "path_to_your_image.jpg"
+
+    # Getting the Base64 string
+    base64_image = encode_image(image_path)
+
+    # Example prompt or instructions for an image-based model (assuming GPT-4 with vision capabilities).
+    # Adjust as appropriate for the API/method you are using.
+    response = client.responses.create(
+        model="gpt-4o-mini", 
+        input=[
+            {
+                "role": "user",
+                "content": [
+                {
+                    "type": "input_text",
+                    "text": f"You are an AI assistant that extracts all visible text from the image. {extra_instructions}"
+                },
+                {
+                    "type": "input_image",
+                    "image_url": f"data:image/jpeg;base64,{base64_image}"
+                }]
+            }
+        ]
+    )
+    extracted_text = response.output_text
+    return extracted_text
+
+def extract_text_from_link(link: str, extra_instructions: str = "") -> str:
+    """
+    Sends the raw HTML content of a link to OpenAI for text extraction,
+    avoiding any local parsing libraries (e.g. BeautifulSoup).
+    The function returns only the text that OpenAI deems relevant.
+
+    :param link: URL of the webpage to extract text from.
+    :param extra_instructions: Additional guidance for OpenAI on how to process the text.
+    :return: Extracted text as a string.
+    """
+
+    page_html = requests.get(link).text  # Fetch the entire HTML as plain text
+    response = client.responses.create(
+        model="gpt-4o-2024-08-06",
+        input=page_html,
+        instructions=(
+            "You are an AI assistant that extracts the food reicipe this raw HTML.\n"
+            f"{extra_instructions}"
+        ),
+    )
+    return response.output_text.strip()
 
 # ---------------------------------------------------------------------------------
 # 3. Streamlit app
