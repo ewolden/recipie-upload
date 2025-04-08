@@ -30,4 +30,4 @@ ENV PORT=8501
 EXPOSE ${PORT}
 
 # Command to run the Streamlit app
-CMD streamlit run streamlit_app.py --server.port=${PORT} --server.address=0.0.0.0
+CMD uv run streamlit run streamlit_app.py --server.port=${PORT} --server.address=0.0.0.0
