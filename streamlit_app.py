@@ -3,7 +3,6 @@ import re
 import requests
 from openai import OpenAI
 import streamlit as st
-from bs4 import BeautifulSoup
 from github import Github  # PyGithub
 import logging
 from PIL import Image
@@ -29,29 +28,6 @@ client = OpenAI(
 # ---------------------------------------------------------------------------------
 # 2. Helper functions
 # ---------------------------------------------------------------------------------
-def scrape_recipe(url: str) -> str:
-    """
-    Fetch the page and attempt to extract a 'recipe' section.
-    This is basic and may need adaptation for your specific sites.
-    """
-    resp = requests.get(url, timeout=10)
-    resp.raise_for_status()
-    soup = BeautifulSoup(resp.text, "html.parser")
-    
-    # Example selectors (adjust to your needs)
-    possible_selectors = [
-        "div.recipe",
-        "div.recipe-content",
-        "div.post-content",
-        "article.recipe",
-    ]
-    for sel in possible_selectors:
-        recipe_section = soup.select_one(sel)
-        if recipe_section:
-            return recipe_section.get_text(separator="\n", strip=True)
-    
-    # Fallback if no obvious section
-    return soup.get_text(separator="\n", strip=True)
 
 def call_openai_for_recipe(recipe_text: str, user_instructions: str) -> str:
     """
@@ -361,7 +337,7 @@ def main():
             if recipe_link:
                 try:
                     with st.spinner("Scraping recipe from provided link..."):
-                        recipe_text = scrape_recipe(recipe_link)
+                        recipe_text = extract_text_from_link(recipe_link)
                 except Exception as e:
                     st.error(f"Error scraping recipe: {e}")
                     return
