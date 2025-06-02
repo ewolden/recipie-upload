@@ -148,7 +148,7 @@ def call_openai_for_recipe(recipe_text: str, user_instructions: str) -> str:
         logger.info(f"Sending prompt to OpenAI - Length: {len(prompt)} characters")
         
         response = client.responses.create(
-            model="gpt-4o-2024-08-06",
+            model="gpt-4.1-2025-04-14",
             input=prompt,
             instructions="You are transforming food recipes into a specific markdown format. Respond only with the converted recipe in plain markdown without code fences or syntax highlighting markers.",
         )
@@ -330,7 +330,7 @@ def extract_text_from_image(image_bytes: bytes, extra_instructions: str = "") ->
         
         # Send a request to OpenAI
         response = client.responses.create(
-            model="gpt-4o-mini", 
+            model="gpt-4.1-mini-2025-04-14", 
             input=[
                 {
                     "role": "user",
