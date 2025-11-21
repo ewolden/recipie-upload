@@ -8,7 +8,7 @@ import time
 import requests
 from PIL import Image
 
-from ..config import get_openai_client
+from ..config import get_openai_client, get_openai_model
 from ..logging_config import get_logger
 from ..prompts import IMAGE_PROMPT_TEMPLATE
 
@@ -31,7 +31,7 @@ def generate_recipe_image(recipe_text: str, extra_instructions: str = "") -> byt
 
     client = get_openai_client()
     response = client.images.generate(
-        model="dall-e-3",
+        model=get_openai_model("image_generation"),
         prompt=prompt_for_dalle,
         size="1024x1024",
         quality="standard",

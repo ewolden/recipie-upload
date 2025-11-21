@@ -13,6 +13,31 @@ logger = get_logger(__name__)
 
 RECIPES_FOLDER = os.getenv("RECIPES_FOLDER", "content/post")
 
+OPENAI_MODELS = {
+    "recipe_conversion": os.getenv(
+        "OPENAI_MODEL_RECIPE_CONVERSION", "gpt-5.1-2025-11-13"
+    ),
+    "text_extraction_image": os.getenv(
+        "OPENAI_MODEL_TEXT_EXTRACTION_IMAGE", "gpt-5.1-2025-11-13"
+    ),
+    "text_extraction_link": os.getenv(
+        "OPENAI_MODEL_TEXT_EXTRACTION_LINK", "gpt-5.1-2025-11-13"
+    ),
+    "image_generation": os.getenv(
+        "OPENAI_MODEL_IMAGE_GENERATION", "gpt-image-1"
+    ),
+}
+
+
+def get_openai_model(service: str) -> str:
+    """Return configured OpenAI model name for a given service."""
+    try:
+        return OPENAI_MODELS[service]
+    except KeyError as exc:  # pragma: no cover - defensive branch
+        message = f"OpenAI model not configured for '{service}'."
+        logger.error(message)
+        raise RuntimeError(message) from exc
+
 
 @lru_cache(maxsize=1)
 def get_openai_client() -> OpenAI:
@@ -54,4 +79,10 @@ def get_github_repo():
     return github_client.get_repo(repo_name)
 
 
-__all__ = ["RECIPES_FOLDER", "get_openai_client", "get_github_repo"]
+__all__ = [
+    "RECIPES_FOLDER",
+    "OPENAI_MODELS",
+    "get_openai_client",
+    "get_github_repo",
+    "get_openai_model",
+]

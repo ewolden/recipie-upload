@@ -6,7 +6,7 @@ import time
 
 import requests
 
-from ..config import get_openai_client
+from ..config import get_openai_client, get_openai_model
 from ..logging_config import get_logger
 from ..utils import strip_markdown_fences
 
@@ -26,7 +26,7 @@ def extract_text_from_image(image_bytes: bytes, extra_instructions: str = "") ->
 
     client = get_openai_client()
     response = client.responses.create(
-        model="gpt-4.1-mini-2025-04-14",
+        model=get_openai_model("text_extraction_image"),
         input=[
             {
                 "role": "user",
@@ -77,7 +77,7 @@ def extract_text_from_link(link: str, extra_instructions: str = "") -> str:
 
     client = get_openai_client()
     openai_response = client.responses.create(
-        model="gpt-4o-2024-08-06",
+        model=get_openai_model("text_extraction_link"),
         input=page_html,
         instructions=(
             "You are an AI assistant that extracts the food recipe from this raw HTML.\n"

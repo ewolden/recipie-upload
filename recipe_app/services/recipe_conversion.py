@@ -5,7 +5,7 @@ from datetime import datetime
 import re
 import time
 
-from ..config import get_openai_client
+from ..config import get_openai_client, get_openai_model
 from ..logging_config import get_logger
 from ..models import RecipeConversionResult
 from ..prompts import RECIPE_PROMPT_TEMPLATE
@@ -21,7 +21,7 @@ def call_openai_for_recipe(prompt: str) -> str:
 
     client = get_openai_client()
     response = client.responses.create(
-        model="gpt-4.1-2025-04-14",
+        model=get_openai_model("recipe_conversion"),
         input=prompt,
         instructions=(
             "You are transforming food recipes into a specific markdown format. "
