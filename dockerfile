@@ -1,4 +1,4 @@
-FROM python:3.14-slim
+FROM python:3.13-slim
 
 WORKDIR /app
 
@@ -10,6 +10,8 @@ RUN apt-get update && apt-get install -y \
 
 # Copy project files
 COPY pyproject.toml uv.lock streamlit_app.py /app/
+
+ADD recipe_app /app/recipe_app
 
 # Install uv
 RUN pip install uv
