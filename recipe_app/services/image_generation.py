@@ -34,7 +34,7 @@ def generate_recipe_image(recipe_text: str, extra_instructions: str = "") -> byt
         model=get_openai_model("image_generation"),
         prompt=prompt_for_dalle,
         size="1024x1024",
-        quality="standard",
+        quality="high",
         n=1,
     )
 
