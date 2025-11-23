@@ -51,6 +51,17 @@ def get_openai_client() -> OpenAI:
     logger.debug("Creating OpenAI client")
     return OpenAI(api_key=api_key)
 
+@lru_cache(maxsize=1)
+def get_openai_image_client() -> OpenAI:
+    """Instantiate (and cache) an OpenAI client with environment credentials."""
+    api_key = os.getenv("OPENAI_API_KEY_IMAGE")
+    if not api_key:
+        message = "OPENAI_API_KEY_IMAGE environment variable is not set."
+        logger.error(message)
+        raise RuntimeError(message)
+
+    logger.debug("Creating OpenAI client")
+    return OpenAI(api_key=api_key)
 
 @lru_cache(maxsize=1)
 def get_github_repo():
