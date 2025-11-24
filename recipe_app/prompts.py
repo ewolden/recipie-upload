@@ -83,9 +83,9 @@ Recipe Text:
 """
 
 IMAGE_PROMPT_TEMPLATE = (
-    "A cartoon sketch of the food, inspired by the illustrative style of Tom Hovey, "
-    "characterized by bold lines, vibrant colors, and a playful, whimsical feel. "
-    "It should depict {title}. {extra_instructions}"
+    "A cartoon sketch of the food, inspired by the illustrative style used in The Great British Bake Off, "
+    "characterized by bold lines, vibrant colors, and a playful, whimsical feel. Never have text in the image."
+    "It should depict {title} which is {description}. {extra_instructions}"
 )
 
 TECHNICAL_TITLE_PATTERN = re.compile(r'technical_title\s*=\s*"([^"]+)"')
