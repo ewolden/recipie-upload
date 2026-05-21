@@ -1,6 +1,5 @@
 """Utilities for generating and compressing recipe illustration images."""
 from __future__ import annotations
-from altair.vegalite.v5.schema.channels import Description
 
 import io
 import re
