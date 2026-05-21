@@ -15,16 +15,16 @@ RECIPES_FOLDER = os.getenv("RECIPES_FOLDER", "content/post")
 
 OPENAI_MODELS = {
     "recipe_conversion": os.getenv(
-        "OPENAI_MODEL_RECIPE_CONVERSION", "gpt-5.1-2025-11-13"
+        "OPENAI_MODEL_RECIPE_CONVERSION", "gpt-5.5"
     ),
     "text_extraction_image": os.getenv(
-        "OPENAI_MODEL_TEXT_EXTRACTION_IMAGE", "gpt-5.1-2025-11-13"
+        "OPENAI_MODEL_TEXT_EXTRACTION_IMAGE", "gpt-5.5"
     ),
     "text_extraction_link": os.getenv(
-        "OPENAI_MODEL_TEXT_EXTRACTION_LINK", "gpt-5.1-2025-11-13"
+        "OPENAI_MODEL_TEXT_EXTRACTION_LINK", "gpt-5.5"
     ),
     "image_generation": os.getenv(
-        "OPENAI_MODEL_IMAGE_GENERATION", "gpt-image-1"
+        "OPENAI_MODEL_IMAGE_GENERATION", "gpt-image-2"
     ),
 }
 
